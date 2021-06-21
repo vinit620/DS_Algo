@@ -19,6 +19,7 @@ void InsertAtHead(Node *&head, int val);
 void DeleteNode(Node *&head, int val);
 void DisplayList(Node *head);
 bool Search(Node *head, int key);
+void ReverseList(Node *&head);
 
 
 int main(void)
@@ -30,9 +31,11 @@ int main(void)
     InsertAtHead(head, 40);
     InsertAtHead(head, 50);
     DisplayList(head);
-    DeleteNode(head, 50);
-    DeleteNode(head, 30);
-    DeleteNode(head, 10);
+    // DeleteNode(head, 50);
+    // DeleteNode(head, 30);
+    // DeleteNode(head, 10);
+    // DisplayList(head);
+    ReverseList(head);
     DisplayList(head);
 
     return 0;
@@ -123,4 +126,21 @@ bool Search(Node *head, int key)
         head = head->next;
     }
     return false;
+}
+
+
+void ReverseList(Node *&head)
+{
+    Node *previous = NULL;
+    Node *current = head;
+    Node *next;
+
+    while (current != NULL)
+    {
+        next = current->next;
+        current->next = previous;
+        previous = current;
+        current = next;
+    }
+    head = previous;
 }
