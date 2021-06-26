@@ -19,23 +19,29 @@ void InsertAtHead(Node *&head, int val);
 void DeleteNode(Node *&head, int val);
 void DisplayList(Node *head);
 bool Search(Node *head, int key);
-void ReverseList(Node *&head);
+Node *ReverseList(Node *&head);
+Node *ReverseKNodes(Node *&head, int k);
+void MakeCycle(Node *&head, int value);
+bool DetectCycle(Node *&head);                         // Floyd's Algorithm
+void RemoveCycle(Node *&head);                         // Floyd's Algorithm Continue
+
 
 
 int main(void)
 {
     Node *head = NULL;
-    InsertAtHead(head, 10);
-    InsertAtTail(head, 20);
-    InsertAtTail(head, 30);
-    InsertAtHead(head, 40);
-    InsertAtHead(head, 50);
-    DisplayList(head);
-    // DeleteNode(head, 50);
-    // DeleteNode(head, 30);
-    // DeleteNode(head, 10);
-    // DisplayList(head);
-    ReverseList(head);
+    InsertAtHead(head, 1);
+    InsertAtTail(head, 2);
+    InsertAtTail(head, 3);
+    InsertAtTail(head, 4);
+    InsertAtTail(head, 5);
+    InsertAtTail(head, 6);
+    
+    MakeCycle(head, 3);
+    cout << DetectCycle(head) << endl;
+
+    RemoveCycle(head);
+    cout << DetectCycle(head) << endl;
     DisplayList(head);
 
     return 0;
@@ -129,7 +135,7 @@ bool Search(Node *head, int key)
 }
 
 
-void ReverseList(Node *&head)
+Node *ReverseList(Node *&head)
 {
     Node *previous = NULL;
     Node *current = head;
@@ -142,5 +148,82 @@ void ReverseList(Node *&head)
         previous = current;
         current = next;
     }
-    head = previous;
+    return previous;
+}
+
+
+Node *ReverseKNodes(Node *&head, int k)
+{
+    Node *previous = NULL;
+    Node *current = head;
+    Node *next;
+
+    int counter = 0;
+    while (current && counter < k)
+    {
+        next = current->next;
+        current->next = previous;
+        previous = current;
+        current = next;
+        counter++;
+    }
+
+    if (next)
+        head->next = ReverseKNodes(next, k);
+    
+    return previous;
+}
+
+
+void MakeCycle(Node *&head, int value)
+{
+    Node *temp = head;
+    Node *cycleNode;
+
+    while (temp->next)
+    {
+        if (temp->data == value)
+            cycleNode = temp;
+        
+        temp = temp->next;
+    }
+    temp->next = cycleNode;
+}
+
+
+bool DetectCycle(Node *&head)
+{
+    Node *fast = head, *slow = head;
+
+    while (fast && fast->next)
+    {
+        slow = slow->next;
+        fast = fast->next->next;
+
+        if (fast == slow)
+            return true;
+    }
+    return false;
+}
+
+
+void RemoveCycle(Node *&head)
+{
+    Node *fast = head, *slow = head;
+
+    do
+    {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    while (slow != fast);
+    
+    fast = head;
+    while (fast->next != slow->next)
+    {
+        slow = slow->next;
+        fast = fast->next;
+    }
+
+    slow->next = NULL;
 }
